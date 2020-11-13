@@ -14,6 +14,10 @@ left = Motor(Port.B)
 right = Motor(Port.C)
 robot = DriveBase(left, right, 56, 114)
 
+line_sensor_L = ColorSensor(Port.S1)
+line_sensor_C = ColorSensor(Port.S2)
+line_sensor_R = ColorSensor(Port.S3)
+
 robot.drive(100, 0)
 while True:
     wait(10)
