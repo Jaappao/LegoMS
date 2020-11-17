@@ -33,7 +33,17 @@ line_sensor_R = ColorSensor(Port.S3)
 robot.drive(100, 0)
 
 while True:
-    if (detect_white(line_sensor_C) and detect_white(line_sensor_L) and detect_white(line_sensor_R)):
+    # カーブ制御
+    if (detect_black(line_sensor_R)):
+        robot.drive(100, +50)
+        wait(10)
+
+    if (detect_black(line_sensor_L)):
+        robot.drive(100, -50)
+        wait(10)
+
+    # 全て白色になった時
+    if (detect_black(line_sensor_C) and detect_black(line_sensor_L) and detect_black(line_sensor_R)):
         break
 
     print(line_sensor_C.reflection())
