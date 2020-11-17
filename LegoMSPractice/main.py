@@ -42,8 +42,9 @@ while True:
         robot.drive(100, -50)
         wait(10)
 
-    # 全て白色になった時
+    # 全て黒色になった時
     if (detect_black(line_sensor_C) and detect_black(line_sensor_L) and detect_black(line_sensor_R)):
+        # TODO もう少しなんとか条件を緩めないと、突然全部黒になった時に停止しちゃう
         break
 
     print(line_sensor_C.reflection())
