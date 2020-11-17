@@ -33,6 +33,9 @@ line_sensor_R = ColorSensor(Port.S3)
 robot.drive(100, 0)
 
 while True:
+    if (detect_black(line_sensor_C)):
+        robot.drive(100, 0)
+    
     # カーブ制御
     if (detect_black(line_sensor_R)):
         robot.drive(100, +50)
