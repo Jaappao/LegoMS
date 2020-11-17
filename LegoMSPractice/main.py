@@ -15,7 +15,9 @@ def detect_white(colorsensor):
     """
     ラインを検知した時
     """
-    threshold = 60
+    BLACK = 9
+    WHITE = 60
+    threshold = (BLACK + WHITE) / 2
     return threshold < colorsensor.reflection();
 
 
