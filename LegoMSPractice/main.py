@@ -10,6 +10,15 @@ from pybricks.media.ev3dev import SoundFile, ImageFile
 
 # This program requires LEGO EV3 MicroPython v2.0 or higher.
 # Click "Open user guide" on the EV3 extension tab for more information.
+
+def detect_white(colorsensor):
+    """
+    ラインを検知した時
+    """
+    threshold = 60
+    return threshold < colorsensor.reflection();
+
+
 left = Motor(Port.B)
 right = Motor(Port.C)
 robot = DriveBase(left, right, 56, 114)
@@ -19,5 +28,14 @@ line_sensor_C = ColorSensor(Port.S2)
 line_sensor_R = ColorSensor(Port.S3)
 
 robot.drive(100, 0)
+
 while True:
+    if (detect_white(line_sensor_C) and detect_white(line_sensor_L) and detect_white(line_sensor_R)):
+        break
+
+    print(line_sensor_C.reflection())
+
+
     wait(10)
+
+robot.stop()
