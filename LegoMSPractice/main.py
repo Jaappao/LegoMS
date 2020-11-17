@@ -38,12 +38,19 @@ while True:
     
     # カーブ制御
     if (detect_black(line_sensor_R)):
-        robot.drive(100, +50)
-        wait(10)
+        robot.drive(70, +50)
+        wait(50)
+
+        if (detect_black(line_sensor_R)):
+            robot.drive(50, +50)
+        
 
     if (detect_black(line_sensor_L)):
-        robot.drive(100, -50)
-        wait(10)
+        robot.drive(70, -50)
+        wait(50)
+
+        if (detect_black(line_sensor_L)):
+            robot.drive(50, +50)
 
     # 全て黒色になった時
     if (detect_black(line_sensor_C) and detect_black(line_sensor_L) and detect_black(line_sensor_R)):
