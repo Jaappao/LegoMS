@@ -11,14 +11,15 @@ from pybricks.media.ev3dev import SoundFile, ImageFile
 # This program requires LEGO EV3 MicroPython v2.0 or higher.
 # Click "Open user guide" on the EV3 extension tab for more information.
 
-def detect_white(colorsensor):
+def detect_black(colorsensor):
     """
-    ラインを検知した時
+    ラインから外れているのを検知した時
     """
     BLACK = 9
     WHITE = 60
     threshold = (BLACK + WHITE) / 2
-    return threshold < colorsensor.reflection();
+
+    return colorsensor.reflection() < threshold
 
 
 left = Motor(Port.B)
