@@ -72,10 +72,23 @@ while True:
     # 全て黒色になった時
     if (detect_black(line_sensor_C) and detect_black(line_sensor_L) and detect_black(line_sensor_R)):
         # TODO もう少しなんとか条件を緩めないと、突然全部黒になった時に停止しちゃう
+
+        while(True):
+            robot.drive(slow, 0)
+            wait(50)
+
+            # 十字路
+            if((not detect_black(line_sensor_L)) and detect_black(line_sensor_C) and (not detect_black(line_sensor_R))):
+                break
+
+            
+            # 終了
+            if((not detect_black(line_sensor_L)) and (not detect_black(line_sensor_C)) and (not detect_black(line_sensor_R))):
+                final_flag = True
+                break
+
+    if(final_flag):
         break
-
-    print(line_sensor_C.reflection())
-
 
     wait(10)
 
