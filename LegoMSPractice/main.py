@@ -21,6 +21,9 @@ def detect_black(colorsensor):
 
     return colorsensor.reflection() < threshold
 
+# EV3
+ev3 = EV3Brick()
+
 # Motor Settings
 left = Motor(Port.B)
 right = Motor(Port.C)
@@ -78,4 +81,4 @@ while True:
 
 robot.stop()
 
-robot.speaker.play_notes(['C4/4', 'C4/4', 'G4/4', 'G4/4'])
+ev3.speaker.play_notes(['C4/4', 'C4/4', 'G4/4', 'G4/4'])
