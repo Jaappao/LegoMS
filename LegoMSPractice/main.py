@@ -63,3 +63,5 @@ while True:
     wait(10)
 
 robot.stop()
+
+robot.speaker.play_notes(['C4/4', 'C4/4', 'G4/4', 'G4/4'])
