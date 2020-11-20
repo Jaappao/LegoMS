@@ -21,11 +21,12 @@ def detect_black(colorsensor):
 
     return colorsensor.reflection() < threshold
 
-
+# Motor Settings
 left = Motor(Port.B)
 right = Motor(Port.C)
 robot = DriveBase(left, right, 56, 114)
 
+# Line Sensor Instance
 line_sensor_L = ColorSensor(Port.S1)
 line_sensor_C = ColorSensor(Port.S2)
 line_sensor_R = ColorSensor(Port.S3)
