@@ -30,27 +30,40 @@ line_sensor_L = ColorSensor(Port.S1)
 line_sensor_C = ColorSensor(Port.S2)
 line_sensor_R = ColorSensor(Port.S3)
 
-robot.drive(100, 0)
+# Speed Parametor
+normal = 100
+slow = 70
+take_care = 50
 
+# Rotate Parametor
+degree = 50
+
+# Exit Flag
+final_flag = False
+
+
+# Main Sequence
+robot.drive(normal, 0)
 while True:
+    # 直線補正
     if (detect_black(line_sensor_C)):
-        robot.drive(100, 0)
+        robot.drive(normal, 0)
     
-    # カーブ制御
+    # カーブ制御(右)
     if (detect_black(line_sensor_R)):
-        robot.drive(70, +50)
+        robot.drive(slow, degree)
         wait(50)
 
         if (detect_black(line_sensor_R)):
-            robot.drive(50, +50)
+            robot.drive(take_care, degree)
         
-
+    # カーブ制御(左)
     if (detect_black(line_sensor_L)):
-        robot.drive(70, -50)
+        robot.drive(slow, -degree)
         wait(50)
 
         if (detect_black(line_sensor_L)):
-            robot.drive(50, +50)
+            robot.drive(take_care, -degree)
 
     # 全て黒色になった時
     if (detect_black(line_sensor_C) and detect_black(line_sensor_L) and detect_black(line_sensor_R)):
