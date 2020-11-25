@@ -35,16 +35,17 @@ line_sensor_C = ColorSensor(Port.S2)
 line_sensor_R = ColorSensor(Port.S3)
 
 # Speed Parametor
-normal = 100
-slow = 70
-take_care = 50
+normal = 250
+slow = 200
+take_care = 120
 
 # Rotate Parametor
-degree = 50
+degree = 80
 
 # Exit Flag
 final_flag = False
 
+last_detected = line_sensor_C
 
 # Main Sequence
 robot.drive(normal, 0)
@@ -52,11 +53,17 @@ while True:
     # 直線補正
     if (detect_black(line_sensor_C)):
         robot.drive(normal, 0)
+
+        if(detect_black(line_sensor_L)):
+            last_detected = line_sensor_L
+
+        if(detect_black(line_sensor_R)):
+            last_detected = line_sensor_R
     
     # カーブ制御(右)
     if (detect_black(line_sensor_R)):
         robot.drive(slow, degree)
-        wait(50)
+        wait(20)
 
         if (detect_black(line_sensor_R)):
             robot.drive(take_care, degree)
@@ -64,7 +71,7 @@ while True:
     # カーブ制御(左)
     if (detect_black(line_sensor_L)):
         robot.drive(slow, -degree)
-        wait(50)
+        wait(20)
 
         if (detect_black(line_sensor_L)):
             robot.drive(take_care, -degree)
@@ -75,7 +82,7 @@ while True:
 
         while(True):
             robot.drive(slow, 0)
-            wait(50)
+            wait(20)
 
             # 十字路
             if((not detect_black(line_sensor_L)) and detect_black(line_sensor_C) and (not detect_black(line_sensor_R))):
@@ -86,6 +93,15 @@ while True:
             if((not detect_black(line_sensor_L)) and (not detect_black(line_sensor_C)) and (not detect_black(line_sensor_R))):
                 final_flag = True
                 break
+    
+    if((not detect_black(line_sensor_L)) and (not detect_black(line_sensor_C)) and (not detect_black(line_sensor_R))):
+        if (last_detected == line_sensor_L):
+            robot.drive(take_care, -(degree+20))
+
+        if (last_detected == line_sensor_R):
+            robot.drive(take_care, (degree+20))
+        
+        wait(20)
 
     if(final_flag):
         break
