@@ -15,8 +15,6 @@ def detect_black(colorsensor):
     """
     ラインから外れているのを検知した時
     """
-    BLACK = 9
-    WHITE = 60
     threshold = (BLACK + WHITE) / 2
 
     return colorsensor.reflection() < threshold
@@ -49,6 +47,9 @@ last_detected = line_sensor_C
 
 # Main Sequence
 robot.drive(normal, 0)
+BLACK = line_sensor_C.reflection()
+WHITE = (line_sensor_L.reflection() + line_sensor_R.reflection()) / 2
+
 while True:
     # 直線補正
     if (detect_black(line_sensor_C)):
