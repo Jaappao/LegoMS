@@ -15,8 +15,6 @@ def detect_black(colorsensor):
     """
     ラインから外れているのを検知した時
     """
-    BLACK = 9
-    WHITE = 60
     threshold = (BLACK + WHITE) / 2
 
     return colorsensor.reflection() < threshold
@@ -35,8 +33,8 @@ line_sensor_C = ColorSensor(Port.S2)
 line_sensor_R = ColorSensor(Port.S3)
 
 # Speed Parametor
-normal = 250
-slow = 200
+normal = 300
+slow = 230
 take_care = 120
 
 # Rotate Parametor
@@ -45,25 +43,31 @@ degree = 80
 # Exit Flag
 final_flag = False
 
+# 直角カーブで行きすぎて真っ白になった時に最後に黒を補足した側に曲がるためのインスタンスを格納
 last_detected = line_sensor_C
 
 # Main Sequence
+BLACK = line_sensor_C.reflection()
+WHITE = (line_sensor_L.reflection() + line_sensor_R.reflection()) / 2
+
 robot.drive(normal, 0)
+
 while True:
     # 直線補正
     if (detect_black(line_sensor_C)):
         robot.drive(normal, 0)
 
+        # 直角カーブで行きすぎて真っ白になった時に最後に黒を補足した側に曲がるためのインスタンスを格納
         if(detect_black(line_sensor_L)):
             last_detected = line_sensor_L
-
+        
         if(detect_black(line_sensor_R)):
             last_detected = line_sensor_R
     
     # カーブ制御(右)
     if (detect_black(line_sensor_R)):
         robot.drive(slow, degree)
-        wait(20)
+        wait(10)
 
         if (detect_black(line_sensor_R)):
             robot.drive(take_care, degree)
@@ -71,18 +75,17 @@ while True:
     # カーブ制御(左)
     if (detect_black(line_sensor_L)):
         robot.drive(slow, -degree)
-        wait(20)
+        wait(10)
 
         if (detect_black(line_sensor_L)):
             robot.drive(take_care, -degree)
 
     # 全て黒色になった時
     if (detect_black(line_sensor_C) and detect_black(line_sensor_L) and detect_black(line_sensor_R)):
-        # TODO もう少しなんとか条件を緩めないと、突然全部黒になった時に停止しちゃう
 
         while(True):
             robot.drive(slow, 0)
-            wait(20)
+            wait(25)
 
             # 十字路
             if((not detect_black(line_sensor_L)) and detect_black(line_sensor_C) and (not detect_black(line_sensor_R))):
@@ -94,14 +97,15 @@ while True:
                 final_flag = True
                 break
     
+    # 直角カーブや緩いカーブで全て白になるまでオーバーシュートした時に、最後に黒を検知した方向に曲がる
     if((not detect_black(line_sensor_L)) and (not detect_black(line_sensor_C)) and (not detect_black(line_sensor_R))):
         if (last_detected == line_sensor_L):
-            robot.drive(take_care, -(degree+20))
+            robot.drive(take_care, -(degree))
 
         if (last_detected == line_sensor_R):
-            robot.drive(take_care, (degree+20))
+            robot.drive(take_care, (degree))
         
-        wait(20)
+        wait(10)
 
     if(final_flag):
         break
