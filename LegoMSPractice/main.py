@@ -37,12 +37,12 @@ line_sensor_C = ColorSensor(Port.S2)
 line_sensor_R = ColorSensor(Port.S3)
 
 # Speed Parametor
-normal = 180
+normal = 140
 slow = 100
 take_care = 80
 
 # Rotate Parametor
-degree = 80
+degree = 75
 
 # Exit Flag
 final_flag = False
@@ -97,7 +97,12 @@ while True:
             # if((not detect_black(line_sensor_C)) and detect_black(line_sensor_L)):
             #     robot.drive(take_care, +degree)
 
-            wait(30) # ここのDwaitはしっかり待たないと十字路渡れない
+            wait(20) # ここのDwaitはしっかり待たないと十字路渡れない
+
+            # 終了
+            if((not detect_black(line_sensor_L)) and (not detect_black(line_sensor_C)) and (not detect_black(line_sensor_R))):
+                final_flag = True
+                break
 
             # 十字路
             # if((not detect_black(line_sensor_L)) and detect_black(line_sensor_C) and (not detect_black(line_sensor_R))):
@@ -105,27 +110,24 @@ while True:
             if (detect_black(line_sensor_C)):
                 break;
             
-            # 終了
-            if((not detect_black(line_sensor_L)) and (not detect_black(line_sensor_C)) and (not detect_black(line_sensor_R))):
-                final_flag = True
-                break
+            
     
     if((not detect_black(line_sensor_L)) and (not detect_black(line_sensor_C)) and (not detect_black(line_sensor_R))):
 
         if (last_detected == line_sensor_L):
             while((not detect_black(line_sensor_L)) and (not detect_black(line_sensor_C)) and (not detect_black(line_sensor_R))):
-                robot.drive(10, -(degree+20))
+                robot.drive(10, (degree+20))
 
         if (last_detected == line_sensor_R):
             while((not detect_black(line_sensor_L)) and (not detect_black(line_sensor_C)) and (not detect_black(line_sensor_R))):
-                robot.drive(10, (degree+20))
+                robot.drive(10, -(degree+20))
         
         # wait(20) # TODO コメントアウト外した時、外さなかった時試す
 
     if(final_flag):
         break
 
-    wait(50) # TODO 高速化するならもっと短くしてもいいかも
+    wait(10) # TODO 高速化するならもっと短くしてもいいかも
     # data.log(line_sensor_L.reflection(), line_sensor_C.reflection(), line_sensor_R.reflection())
 
 robot.stop()
