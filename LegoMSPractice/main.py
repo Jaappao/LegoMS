@@ -16,8 +16,12 @@ def detect_black(colorsensor):
     ラインから外れているのを検知した時
     """
     threshold = (BLACK + WHITE) / 2
-
-    return colorsensor.reflection() < threshold
+    # threshold = 50
+    if (colorsensor.reflection() < threshold):
+        wait(1)
+        return colorsensor.reflection() < threshold
+    else:
+        return False
 
 # EV3
 ev3 = EV3Brick()
@@ -33,9 +37,9 @@ line_sensor_C = ColorSensor(Port.S2)
 line_sensor_R = ColorSensor(Port.S3)
 
 # Speed Parametor
-normal = 250
-slow = 200
-take_care = 120
+normal = 180
+slow = 100
+take_care = 80
 
 # Rotate Parametor
 degree = 80
@@ -44,6 +48,9 @@ degree = 80
 final_flag = False
 
 last_detected = line_sensor_C
+
+# datalogging
+# data = DataLog('data', name='log', timestamp=False, extension='txt')
 
 # Main Sequence
 robot.drive(normal, 0)
@@ -64,7 +71,7 @@ while True:
     # カーブ制御(右)
     if (detect_black(line_sensor_R)):
         robot.drive(slow, degree)
-        wait(20)
+        wait(20) # 高速化するならもっと短くしてもいいかも
 
         if (detect_black(line_sensor_R)):
             robot.drive(take_care, degree)
@@ -72,7 +79,7 @@ while True:
     # カーブ制御(左)
     if (detect_black(line_sensor_L)):
         robot.drive(slow, -degree)
-        wait(20)
+        wait(20) # 高速化するならもっと短くしてもいいかも
 
         if (detect_black(line_sensor_L)):
             robot.drive(take_care, -degree)
@@ -83,12 +90,20 @@ while True:
 
         while(True):
             robot.drive(slow, 0)
-            wait(20)
+
+            # if((not detect_black(line_sensor_C)) and detect_black(line_sensor_R)):
+            #     robot.drive(take_care, degree)
+
+            # if((not detect_black(line_sensor_C)) and detect_black(line_sensor_L)):
+            #     robot.drive(take_care, +degree)
+
+            wait(30) # ここのDwaitはしっかり待たないと十字路渡れない
 
             # 十字路
-            if((not detect_black(line_sensor_L)) and detect_black(line_sensor_C) and (not detect_black(line_sensor_R))):
-                break
-
+            # if((not detect_black(line_sensor_L)) and detect_black(line_sensor_C) and (not detect_black(line_sensor_R))):
+            #     break
+            if (detect_black(line_sensor_C)):
+                break;
             
             # 終了
             if((not detect_black(line_sensor_L)) and (not detect_black(line_sensor_C)) and (not detect_black(line_sensor_R))):
@@ -96,18 +111,22 @@ while True:
                 break
     
     if((not detect_black(line_sensor_L)) and (not detect_black(line_sensor_C)) and (not detect_black(line_sensor_R))):
+
         if (last_detected == line_sensor_L):
-            robot.drive(take_care, -(degree+20))
+            while((not detect_black(line_sensor_L)) and (not detect_black(line_sensor_C)) and (not detect_black(line_sensor_R))):
+                robot.drive(10, -(degree+20))
 
         if (last_detected == line_sensor_R):
-            robot.drive(take_care, (degree+20))
+            while((not detect_black(line_sensor_L)) and (not detect_black(line_sensor_C)) and (not detect_black(line_sensor_R))):
+                robot.drive(10, (degree+20))
         
-        wait(20)
+        # wait(20) # TODO コメントアウト外した時、外さなかった時試す
 
     if(final_flag):
         break
 
-    wait(10)
+    wait(50) # TODO 高速化するならもっと短くしてもいいかも
+    # data.log(line_sensor_L.reflection(), line_sensor_C.reflection(), line_sensor_R.reflection())
 
 robot.stop()
 
